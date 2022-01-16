@@ -39,14 +39,11 @@ export default {
         });  
         map.addControl(new tt.FullscreenControl());  
         map.addControl(new tt.NavigationControl()); 
-
-          // const tt = window.tt; 
-            // var location = [-121.91595, 37.36729];
-            var location = [this.longitude,this.latitude];
-            var popupOffset = 25; 
-            var marker = new tt.Marker().setLngLat(location).addTo(map); 
-            var popup = new tt.Popup({ offset: popupOffset }).setHTML("Your Destination"); 
-            marker.setPopup(popup).togglePopup();       
+        const location = [this.longitude,this.latitude];
+        const popupOffset = 25; 
+        const marker = new tt.Marker().setLngLat(location).addTo(map); 
+        const popup = new tt.Popup({ offset: popupOffset }).setHTML("Your Destination"); 
+        marker.setPopup(popup).togglePopup();       
        }
      }
 }
