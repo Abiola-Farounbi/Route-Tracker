@@ -17,6 +17,10 @@
         <q-btn label="Search" type="submit" color="deep-purple-8"/>
       </div>
     </q-form>
+
+    <!--  map display component -->
+    <map-display v-if='routeLongitude && routeLatitude' :longitude="routeLongitude" :latitude="routeLatitude" ></map-display>
+
     <div>
       <!-- Display the result of the search -->
       <p>Destination -  {{routeAddress}} </p>
@@ -24,12 +28,10 @@
         <br>
            Estimated Time(MINS) -  {{timeToDestination}}
       </p>
-      <p>
+      <p class='text-red-10'>
         {{errorMessage}}
       </p>
     </div>
-      
-
       </div>
 
 
@@ -38,14 +40,18 @@
 </template>
 
 <script>
+// import the map component
+import mapDisplay from "components/mapDisplay.vue"
 
 // Importing the tomtom service
 import tt from '@tomtom-international/web-sdk-services'
 
 export default {
   name: 'MainLayout',
-
-     data () {
+  components:{
+    mapDisplay
+  },
+  data () {
     return {
     userLat: 0,
     userLng: 0,
@@ -83,13 +89,15 @@ created(){
       _this.routeAddress = response.results[0].address.freeformAddress
       _this.routeLatitude =  response.results[0].position.lat
       _this.routeLongitude = response.results[0].position.lng
-    })
+    })   
+
   //  Using the routing service
       const startLoc = this.userLat + ',' + this.userLng //The location of the user
       const stopLoc = this.routeLatitude + ',' +this.routeLongitude // The location of the destination
-      tt.services.calculateRoute({
+      await tt.services.calculateRoute({
         key: "8h504Wc4AXL6OPndqhrtKf70AovVBL3V",
         locations:  `${startLoc} : ${stopLoc} `,
+        // locations:'4.8,52.3:4.87,52.37',
         travelMode: 'car', //Specifying a routing parameter
         })
       .then(function(routeData) {
