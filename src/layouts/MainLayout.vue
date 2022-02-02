@@ -91,12 +91,14 @@ created(){
       _this.routeLongitude = response.results[0].position.lng
     })   
 
+
   //  Using the routing service
       const startLoc = this.userLat + ',' + this.userLng //The location of the user
       const stopLoc = this.routeLatitude + ',' +this.routeLongitude // The location of the destination
       await tt.services.calculateRoute({
         key: "8h504Wc4AXL6OPndqhrtKf70AovVBL3V",
         locations:  `${startLoc} : ${stopLoc} `,
+        // locations:  '4.8,52.3:4.82,52.37',
         travelMode: 'car', //Specifying a routing parameter
         })
       .then(function(routeData) {
@@ -107,6 +109,7 @@ created(){
         })
    
       .catch((err) => {
+        console.log(err)
         _this.errorMessage = 'Locations cannot be mapped. Try another location'
      });
   

@@ -3,8 +3,16 @@
 </template>
 
 <script>
+
+import tts from '@tomtom-international/web-sdk-services'
+
 export default {
   name: 'mapDisplay',
+  data(){
+      return{
+        stations: []
+      }
+  },
    props:{
     longitude:{
       type: Number,
@@ -31,20 +39,41 @@ export default {
     },
   },
      methods:{
-       displayMap(){
-            const map = tt.map({  
+      async  displayMap(){      
+            const _this = this  
+            var HQ = { lat: _this.latitude, lng: _this.longitude }  
+            const map = await tt.map({  
             key: "8h504Wc4AXL6OPndqhrtKf70AovVBL3V",  
             container:'map', // Container ID 
             style: 'tomtom://vector/1/basic-main',  //the specified map style 
+            center: HQ,
+            zoom:5
         });  
         map.addControl(new tt.FullscreenControl());  
         map.addControl(new tt.NavigationControl()); 
-        const location = [this.longitude,this.latitude];
-        const popupOffset = 25; 
-        const marker = new tt.Marker().setLngLat(location).addTo(map); 
-        const popup = new tt.Popup({ offset: popupOffset }).setHTML("Your Destination"); 
-        marker.setPopup(popup).togglePopup();       
-       }
+
+         await tts.services.poiSearch({
+            key: "8h504Wc4AXL6OPndqhrtKf70AovVBL3V",
+            query: 'Gas Station',
+            center: [ _this.latitude, _this.longitude ]
+            })
+            .then(function(data) {
+              _this.stations = data.results
+                })
+          
+              .catch((err) => {
+                console.log(err)
+            });   
+        // looping through the result to get the value of each location
+       this.stations.forEach(function (e) {
+                const popupOffset = 25; 
+                const marker = new tt.Marker().setLngLat(e.position).addTo(map);
+                const popup = new tt.Popup({ offset: popupOffset }).setHTML(
+                  "<p>" + e.poi.name + "<br>" + e.address.freeformAddress +  "</p>" );
+                marker.togglePopup(popup).setPopup(popup);    
+            });
+       },
+     
      }
 }
 
