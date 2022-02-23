@@ -102,10 +102,8 @@ created(){
         travelMode: 'car', //Specifying a routing parameter
         })
       .then(function(routeData) {
-        const routeGeoJson = routeData.toGeoJson()
-          _this.timeToDestination = (routeGeoJson.features[0].properties.summary.travelTimeInSeconds / 60).toFixed(2)
-          _this.destinationDistance = (routeGeoJson.features[0].properties.summary.lengthInMeters / 1000).toFixed(2)
-          console.log(routeGeoJson.features[0].properties.summary.lengthInMeters / 1000)
+          _this.timeToDestination = (routeData.routes[0].summary.travelTimeInSeconds / 60).toFixed(2)
+          _this.destinationDistance = (routeData.routes[0].summary.lengthInMeters / 1000).toFixed(2)
         })
    
       .catch((err) => {
