@@ -33,8 +33,6 @@
       </p>
     </div>
       </div>
-
-
     </q-page-container>
   </q-layout>
 </template>
@@ -92,25 +90,25 @@ created(){
     })   
 
 
-  //  Using the routing service
-      const startLoc = this.userLat + ',' + this.userLng //The location of the user
-      const stopLoc = this.routeLatitude + ',' +this.routeLongitude // The location of the destination
-      await tt.services.calculateRoute({
-        key: "8h504Wc4AXL6OPndqhrtKf70AovVBL3V",
-        locations:  `${startLoc} : ${stopLoc} `,
-        // locations:  '4.8,52.3:4.82,52.37',
-        travelMode: 'car', //Specifying a routing parameter
-        })
-      .then(function(routeData) {
-          _this.timeToDestination = (routeData.routes[0].summary.travelTimeInSeconds / 60).toFixed(2)
-          _this.destinationDistance = (routeData.routes[0].summary.lengthInMeters / 1000).toFixed(2)
-        })
-   
+  //  Using the matrix routing api
+    const origins = [{ point: { latitude: this.userLat, longitude: this.userLng } }] //The location of the user as starting point
+    const destinations = [{ point: { latitude: this.routeLatitude, longitude: this.routeLongitude} }] // The location of the destination as final point
+    
+    await tt.services.matrixRouting({
+      key: "8h504Wc4AXL6OPndqhrtKf70AovVBL3V",
+      origins: origins,
+      destinations: destinations,
+      traffic: true, // specifying the traffic data
+      travelMode: 'car' //Specifying a routing parameter 
+    }).then(function(routeData){
+      _this.timeToDestination = (routeData.matrix[0][0].response.routeSummary.travelTimeInSeconds / 60).toFixed(2)
+      _this.destinationDistance = (routeData.matrix[0][0].response.routeSummary.lengthInMeters / 1000).toFixed(2)
+
+    })  
       .catch((err) => {
         console.log(err)
         _this.errorMessage = 'Locations cannot be mapped. Try another location'
      });
-  
       }
 
   },
